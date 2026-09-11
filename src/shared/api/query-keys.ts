@@ -4,4 +4,5 @@ export const queryKeys = {
   analyticsDaily: () => ['analytics', 'daily'] as const,
   channelAccounts: () => ['channel-accounts'] as const,
   tenantCurrent: () => ['tenants', 'current'] as const,
+  me: () => ['auth', 'me'] as const,
 };

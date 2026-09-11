@@ -21,7 +21,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/tenants": {
+    "/api/auth/register": {
         parameters: {
             query?: never;
             header?: never;
@@ -30,8 +30,45 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Создать арендатора */
-        post: operations["TenantsController_create"];
+        /**
+         * Регистрация владельца
+         * @description Создаёт пользователя и арендатора, либо подключает владельца к пустому арендатору через claimTenantId.
+         */
+        post: operations["AuthController_register"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Вход */
+        post: operations["AuthController_login"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Текущий пользователь и арендатор */
+        get: operations["AuthController_me"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -145,8 +182,46 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
-        CreateTenantDto: {
+        RegisterDto: {
+            /** @example owner@zooyanki.ru */
+            email: string;
+            password: string;
+            /** @example Илья */
             name: string;
+            /** @description Название нового арендатора. Не нужно, если claimTenantId задан. */
+            tenantName?: string;
+            /**
+             * Format: uuid
+             * @description Подключиться к уже существующему арендатору без участников. Нужно, чтобы не потерять данные после появления JWT.
+             */
+            claimTenantId?: string;
+        };
+        AuthUserDto: {
+            /** Format: uuid */
+            id: string;
+            email: string;
+            name: string;
+            /** @enum {string} */
+            role: "OWNER" | "ADMIN" | "MEMBER";
+        };
+        AuthTenantDto: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+        };
+        AuthResponseDto: {
+            /** @description Bearer access token */
+            accessToken: string;
+            user: components["schemas"]["AuthUserDto"];
+            tenant: components["schemas"]["AuthTenantDto"];
+        };
+        LoginDto: {
+            email: string;
+            password: string;
+        };
+        MeResponseDto: {
+            user: components["schemas"]["AuthUserDto"];
+            tenant: components["schemas"]["AuthTenantDto"];
         };
         TenantViewDto: {
             /** Format: uuid */
@@ -248,7 +323,7 @@ export interface operations {
             };
         };
     };
-    TenantsController_create: {
+    AuthController_register: {
         parameters: {
             query?: never;
             header?: never;
@@ -257,7 +332,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["CreateTenantDto"];
+                "application/json": components["schemas"]["RegisterDto"];
             };
         };
         responses: {
@@ -266,7 +341,49 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["TenantViewDto"];
+                    "application/json": components["schemas"]["AuthResponseDto"];
+                };
+            };
+        };
+    };
+    AuthController_login: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LoginDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthResponseDto"];
+                };
+            };
+        };
+    };
+    AuthController_me: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MeResponseDto"];
                 };
             };
         };
@@ -274,9 +391,7 @@ export interface operations {
     TenantsController_current: {
         parameters: {
             query?: never;
-            header: {
-                "x-tenant-id": string;
-            };
+            header?: never;
             path?: never;
             cookie?: never;
         };
@@ -295,9 +410,7 @@ export interface operations {
     ChannelAccountsController_list: {
         parameters: {
             query?: never;
-            header: {
-                "x-tenant-id": string;
-            };
+            header?: never;
             path?: never;
             cookie?: never;
         };
@@ -316,9 +429,7 @@ export interface operations {
     ChannelAccountsController_connect: {
         parameters: {
             query?: never;
-            header: {
-                "x-tenant-id": string;
-            };
+            header?: never;
             path?: never;
             cookie?: never;
         };
@@ -341,9 +452,7 @@ export interface operations {
     ChannelAccountsController_verify: {
         parameters: {
             query?: never;
-            header: {
-                "x-tenant-id": string;
-            };
+            header?: never;
             path: {
                 id: string;
             };
@@ -369,9 +478,7 @@ export interface operations {
                 page?: number;
                 perPage?: number;
             };
-            header: {
-                "x-tenant-id": string;
-            };
+            header?: never;
             path?: never;
             cookie?: never;
         };
@@ -393,9 +500,7 @@ export interface operations {
                 from?: string;
                 to?: string;
             };
-            header: {
-                "x-tenant-id": string;
-            };
+            header?: never;
             path?: never;
             cookie?: never;
         };
@@ -414,9 +519,7 @@ export interface operations {
     SyncController_trigger: {
         parameters: {
             query?: never;
-            header: {
-                "x-tenant-id": string;
-            };
+            header?: never;
             path?: never;
             cookie?: never;
         };

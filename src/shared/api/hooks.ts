@@ -1,6 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { api, tenantHeader, unwrap } from './client';
+import { clearAccessToken, setAccessToken } from '@/shared/auth/session';
+
+import { api, unwrap } from './client';
 import type { components } from './generated/schema';
 import { queryKeys } from './query-keys';
 
@@ -9,6 +11,8 @@ export type ListingListResult = components['schemas']['ListingListResultDto'];
 export type DailyTotals = components['schemas']['DailyTotalsDto'];
 export type ChannelAccount = components['schemas']['ChannelAccountViewDto'];
 export type ListingStatus = ListingView['status'];
+export type AuthResponse = components['schemas']['AuthResponseDto'];
+export type MeResponse = components['schemas']['MeResponseDto'];
 
 export function useListings(params: {
   page: number;
@@ -21,7 +25,6 @@ export function useListings(params: {
       unwrap(
         api.GET('/api/listings', {
           params: {
-            header: tenantHeader(),
             query: {
               page: params.page,
               perPage: params.perPage,
@@ -36,25 +39,66 @@ export function useListings(params: {
 export function useDailyAnalytics() {
   return useQuery({
     queryKey: queryKeys.analyticsDaily(),
-    queryFn: () =>
-      unwrap(
-        api.GET('/api/analytics/daily', {
-          params: { header: tenantHeader() },
-        }),
-      ),
+    queryFn: () => unwrap(api.GET('/api/analytics/daily')),
   });
 }
 
 export function useChannelAccounts() {
   return useQuery({
     queryKey: queryKeys.channelAccounts(),
-    queryFn: () =>
-      unwrap(
-        api.GET('/api/channel-accounts', {
-          params: { header: tenantHeader() },
-        }),
-      ),
+    queryFn: () => unwrap(api.GET('/api/channel-accounts')),
   });
+}
+
+export function useMe(enabled = true) {
+  return useQuery({
+    queryKey: queryKeys.me(),
+    queryFn: () => unwrap(api.GET('/api/auth/me')),
+    enabled,
+    retry: false,
+  });
+}
+
+export function useLogin() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (body: components['schemas']['LoginDto']) =>
+      unwrap(api.POST('/api/auth/login', { body })),
+    onSuccess: (data) => {
+      setAccessToken(data.accessToken);
+      queryClient.setQueryData(queryKeys.me(), {
+        user: data.user,
+        tenant: data.tenant,
+      } satisfies MeResponse);
+    },
+  });
+}
+
+export function useRegister() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (body: components['schemas']['RegisterDto']) =>
+      unwrap(api.POST('/api/auth/register', { body })),
+    onSuccess: (data) => {
+      setAccessToken(data.accessToken);
+      queryClient.setQueryData(queryKeys.me(), {
+        user: data.user,
+        tenant: data.tenant,
+      } satisfies MeResponse);
+    },
+  });
+}
+
+export function useLogout() {
+  const queryClient = useQueryClient();
+
+  return () => {
+    clearAccessToken();
+    queryClient.clear();
+    window.location.assign('/login');
+  };
 }
 
 export function useTriggerSync() {
@@ -62,12 +106,7 @@ export function useTriggerSync() {
 
   return useMutation({
     mutationFn: (body: components['schemas']['TriggerSyncDto']) =>
-      unwrap(
-        api.POST('/api/sync/trigger', {
-          params: { header: tenantHeader() },
-          body,
-        }),
-      ),
+      unwrap(api.POST('/api/sync/trigger', { body })),
     onSuccess: async (_data, variables) => {
       await new Promise((resolve) => setTimeout(resolve, 2500));
       await Promise.all([

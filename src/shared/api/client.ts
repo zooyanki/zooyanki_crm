@@ -1,16 +1,10 @@
 import createClient from 'openapi-fetch';
 
+import { clearAccessToken, getAccessToken } from '@/shared/auth/session';
+
 import type { paths } from './generated/schema';
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000';
-
-export function getTenantId(): string {
-  const id = process.env.NEXT_PUBLIC_TENANT_ID;
-  if (!id) {
-    throw new Error('Не задан NEXT_PUBLIC_TENANT_ID — без арендатора API недоступен');
-  }
-  return id;
-}
 
 /// Единственная точка выхода к бэкенду. Типы — из OpenAPI-схемы,
 /// руками DTO здесь не пишутся.
@@ -18,8 +12,20 @@ export const api = createClient<paths>({ baseUrl });
 
 api.use({
   onRequest({ request }) {
-    request.headers.set('x-tenant-id', getTenantId());
+    const token = getAccessToken();
+    if (token) {
+      request.headers.set('Authorization', `Bearer ${token}`);
+    }
     return request;
+  },
+  onResponse({ response }) {
+    if (response.status === 401 && typeof window !== 'undefined') {
+      clearAccessToken();
+      if (!window.location.pathname.startsWith('/login')) {
+        window.location.assign('/login');
+      }
+    }
+    return response;
   },
 });
 
@@ -47,8 +53,4 @@ export async function unwrap<T>(
   }
 
   return data;
-}
-
-export function tenantHeader() {
-  return { 'x-tenant-id': getTenantId() } as const;
 }
