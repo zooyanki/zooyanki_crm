@@ -3,12 +3,15 @@
 import { useMemo, useState } from 'react';
 
 import {
+  useApplyVas,
+  useListingVas,
   useListings,
+  useUpdateListingPrice,
   type ListingStatus,
   type ListingView,
 } from '@/shared/api/hooks';
 import { formatDateTime, formatPrice } from '@/shared/lib/format';
-import { CHANNEL_LABEL, LISTING_STATUS_LABEL } from '@/shared/lib/labels';
+import { CHANNEL_LABEL, LISTING_STATUS_LABEL, VAS_SLUG_LABEL } from '@/shared/lib/labels';
 import { cn } from '@/shared/lib/utils';
 
 const STATUS_FILTERS: Array<{ value?: ListingStatus; label: string }> = [
@@ -91,6 +94,7 @@ export function ListingsTable() {
                   <th className="px-5 py-3 font-medium">Статус</th>
                   <th className="px-5 py-3 font-medium">Цена</th>
                   <th className="px-5 py-3 font-medium">Синхронизация</th>
+                  <th className="px-5 py-3 font-medium">Действия</th>
                 </tr>
               </thead>
               <tbody>
@@ -131,8 +135,26 @@ export function ListingsTable() {
 }
 
 function ListingRow({ item }: { item: ListingView }) {
+  const updatePrice = useUpdateListingPrice();
+  const applyVas = useApplyVas();
+  const [priceDraft, setPriceDraft] = useState(
+    item.price !== null && item.price !== undefined ? String(item.price) : '',
+  );
+  const [showVas, setShowVas] = useState(false);
+  const [selectedSlugs, setSelectedSlugs] = useState<string[]>([]);
+  const [selectedStickers, setSelectedStickers] = useState<number[]>([]);
+
+  const vas = useListingVas(item.id, showVas);
+
+  const busy = updatePrice.isPending || applyVas.isPending;
+  const priceValue = Number.parseFloat(priceDraft);
+  const priceChanged =
+    Number.isFinite(priceValue) &&
+    priceValue >= 0 &&
+    priceValue !== (item.price ?? NaN);
+
   return (
-    <tr className="border-t border-zinc-100 hover:bg-zinc-50/70">
+    <tr className="align-top border-t border-zinc-100 hover:bg-zinc-50/70">
       <td className="px-5 py-3">
         <div className="max-w-md">
           {item.url ? (
@@ -156,10 +178,159 @@ function ListingRow({ item }: { item: ListingView }) {
       <td className="px-5 py-3">
         <StatusBadge status={item.status} />
       </td>
-      <td className="px-5 py-3 tabular-nums text-zinc-800">
-        {formatPrice(item.price, item.currency)}
+      <td className="px-5 py-3">
+        <form
+          className="flex items-center gap-1.5"
+          onSubmit={(event) => {
+            event.preventDefault();
+            if (!priceChanged) return;
+            updatePrice.mutate({
+              listingId: item.id,
+              body: { price: priceValue },
+            });
+          }}
+        >
+          <input
+            type="number"
+            min={0}
+            step={1}
+            value={priceDraft}
+            onChange={(event) => setPriceDraft(event.target.value)}
+            disabled={busy}
+            className="w-24 rounded-lg border border-zinc-200 px-2 py-1 text-xs tabular-nums"
+          />
+          <button
+            type="submit"
+            disabled={busy || !priceChanged}
+            className="rounded-lg bg-zinc-900 px-2 py-1 text-xs text-white disabled:opacity-40"
+          >
+            OK
+          </button>
+        </form>
+        {updatePrice.isError ? (
+          <p className="mt-1 text-xs text-red-600">{updatePrice.error.message}</p>
+        ) : null}
+        {updatePrice.isSuccess ? (
+          <p className="mt-1 text-xs text-teal-700">Цена в очереди</p>
+        ) : null}
       </td>
       <td className="px-5 py-3 text-zinc-500">{formatDateTime(item.syncedAt)}</td>
+      <td className="px-5 py-3">
+        <div className="flex min-w-[180px] flex-col gap-2">
+          <button
+            type="button"
+            disabled={busy}
+            onClick={() => {
+              setShowVas((value) => !value);
+              setSelectedSlugs([]);
+              setSelectedStickers([]);
+            }}
+            className="rounded-lg border border-zinc-200 px-2.5 py-1 text-xs font-medium text-zinc-700 hover:bg-zinc-50 disabled:opacity-40"
+          >
+            Продвижение
+          </button>
+
+          {showVas ? (
+            <div className="flex flex-col gap-1.5">
+              {vas.isLoading ? (
+                <p className="text-xs text-zinc-500">Загружаем услуги…</p>
+              ) : null}
+              {vas.isError ? (
+                <p className="text-xs text-red-600">{vas.error.message}</p>
+              ) : null}
+              {(vas.data?.vas ?? []).map((offer) => {
+                const checked = selectedSlugs.includes(offer.slug);
+                return (
+                  <label
+                    key={offer.slug}
+                    className="flex cursor-pointer items-start gap-1.5 text-xs text-zinc-700"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={checked}
+                      onChange={() => {
+                        setSelectedSlugs((prev) =>
+                          checked
+                            ? prev.filter((slug) => slug !== offer.slug)
+                            : [...prev, offer.slug],
+                        );
+                      }}
+                      className="mt-0.5"
+                    />
+                    <span>
+                      {VAS_SLUG_LABEL[offer.slug] ?? offer.slug}
+                      <span className="text-zinc-400">
+                        {' '}
+                        · {formatPrice(offer.price, item.currency)}
+                        {offer.priceOld ? (
+                          <span className="ml-1 line-through">
+                            {formatPrice(offer.priceOld, item.currency)}
+                          </span>
+                        ) : null}
+                      </span>
+                    </span>
+                  </label>
+                );
+              })}
+              {(vas.data?.stickers ?? []).length > 0 ? (
+                <div className="mt-1 flex flex-col gap-1 border-t border-zinc-100 pt-1.5">
+                  <span className="text-[11px] text-zinc-500">Стикеры</span>
+                  {vas.data!.stickers.map((sticker) => {
+                    const checked = selectedStickers.includes(sticker.id);
+                    return (
+                      <label
+                        key={sticker.id}
+                        className="flex cursor-pointer items-start gap-1.5 text-xs text-zinc-700"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={() => {
+                            setSelectedStickers((prev) =>
+                              checked
+                                ? prev.filter((id) => id !== sticker.id)
+                                : [...prev, sticker.id],
+                            );
+                          }}
+                          className="mt-0.5"
+                        />
+                        <span>{sticker.title ?? `Стикер #${sticker.id}`}</span>
+                      </label>
+                    );
+                  })}
+                </div>
+              ) : null}
+              <button
+                type="button"
+                disabled={busy || selectedSlugs.length === 0}
+                onClick={() => {
+                  applyVas.mutate({
+                    listingId: item.id,
+                    body: {
+                      slugs: selectedSlugs,
+                      ...(selectedStickers.length > 0
+                        ? { stickers: selectedStickers }
+                        : {}),
+                    },
+                  });
+                  setShowVas(false);
+                  setSelectedSlugs([]);
+                  setSelectedStickers([]);
+                }}
+                className="rounded-lg bg-zinc-900 px-2 py-1 text-xs text-white disabled:opacity-40"
+              >
+                Применить
+              </button>
+              {applyVas.isError ? (
+                <p className="text-xs text-red-600">{applyVas.error.message}</p>
+              ) : null}
+              {applyVas.isSuccess ? (
+                <p className="text-xs text-teal-700">VAS в очереди</p>
+              ) : null}
+            </div>
+          ) : null}
+        </div>
+      </td>
     </tr>
   );
 }

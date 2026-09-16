@@ -144,6 +144,263 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/listings/{id}/price": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Поставить смену цены в outbox */
+        post: operations["ListingsController_updatePrice"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/listings/{id}/vas": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Доступные услуги продвижения для объявления */
+        get: operations["ListingsController_vas"];
+        put?: never;
+        /** Поставить применение услуг продвижения в outbox */
+        post: operations["ListingsController_applyVas"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/orders": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Список заказов всех подключённых площадок */
+        get: operations["OrdersController_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/orders/{id}/transition": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Перевести заказ (confirm / reject / perform / receive) */
+        post: operations["OrdersController_transition"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/orders/{id}/tracking-number": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Поставить передачу трек-номера в outbox */
+        post: operations["OrdersController_trackingNumber"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/orders/{id}/accept-return": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Поставить приём возврата в outbox */
+        post: operations["OrdersController_acceptReturn"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/orders/{id}/labels": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Сгенерировать и скачать этикетку заказа (PDF, base64) */
+        post: operations["OrdersController_labels"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/orders/{id}/markings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Поставить передачу кодов «Честный знак» в outbox */
+        post: operations["OrdersController_markings"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/orders/{id}/courier-range": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Доступные окна приезда курьера */
+        get: operations["OrdersController_courierRange"];
+        put?: never;
+        /** Выбрать окно приезда курьера (outbox) */
+        post: operations["OrdersController_setCourierRange"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/orders/{id}/cnc-details": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Подготовить заказ самовывоза CNC (outbox) */
+        post: operations["OrdersController_cncDetails"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/wallet/balance": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Баланс кошелька площадки */
+        get: operations["WalletController_balance"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/wallet/operations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** История операций кошелька (не более 7 дней) */
+        get: operations["WalletController_operations"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/inventory": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Остатки по вариантам каталога */
+        get: operations["InventoryController_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/inventory/by-listing/{listingId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Остаток по объявлению (если уже есть в CRM) */
+        get: operations["InventoryController_byListing"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/inventory/adjust": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Установить остаток по объявлению и поставить публикацию в outbox */
+        post: operations["InventoryController_adjust"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/analytics/daily": {
         parameters: {
             query?: never;
@@ -172,6 +429,264 @@ export interface paths {
         put?: never;
         /** Запустить синхронизацию аккаунта немедленно */
         post: operations["SyncController_trigger"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/messaging/conversations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Список диалогов */
+        get: operations["MessagingController_listConversations"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/messaging/conversations/{id}/messages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Сообщения диалога */
+        get: operations["MessagingController_listMessages"];
+        put?: never;
+        /** Отправить текстовое сообщение */
+        post: operations["MessagingController_sendText"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/messaging/conversations/{id}/messages/image": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Отправить изображение */
+        post: operations["MessagingController_sendImage"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/messaging/conversations/{id}/read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Пометить диалог прочитанным */
+        post: operations["MessagingController_markRead"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/messaging/conversations/{id}/sync": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Подтянуть сообщения диалога с площадки */
+        post: operations["MessagingController_syncMessages"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/messaging/webhook/subscribe": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Подписать URL вебхука Авито на этот инстанс */
+        post: operations["MessagingController_subscribe"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/messaging/webhook/unsubscribe": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Отписать вебхук Авито */
+        post: operations["MessagingController_unsubscribe"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/autoload/settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Настройки XML-фида и публичный URL */
+        get: operations["AutoloadController_settings"];
+        /** Обновить поля фида по умолчанию */
+        put: operations["AutoloadController_updateSettings"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/autoload/listings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Черновики объявлений для XML-фида */
+        get: operations["AutoloadController_listListings"];
+        put?: never;
+        /** Добавить объявление в XML-фид (каталог + черновик) */
+        post: operations["AutoloadController_createListing"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/autoload/upload": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Запустить выгрузку фида на Авито */
+        post: operations["AutoloadController_upload"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/autoload/reports/refresh": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Подтянуть последний завершённый отчёт */
+        post: operations["AutoloadController_refresh"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/autoload/runs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** История выгрузок */
+        get: operations["AutoloadController_runs"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/autoload/runs/{id}/items": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Результаты по позициям выгрузки */
+        get: operations["AutoloadController_items"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/reviews": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Список отзывов */
+        get: operations["ReviewsController_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/reviews/{id}/answer": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Ответить на отзыв */
+        post: operations["ReviewsController_answer"];
         delete?: never;
         options?: never;
         head?: never;
@@ -277,6 +792,225 @@ export interface components {
             page: number;
             perPage: number;
         };
+        UpdateListingPriceDto: {
+            /** @example 1500 */
+            price: number;
+        };
+        QueuedListingActionDto: {
+            /** @example true */
+            queued: true;
+            /** Format: uuid */
+            listingId: string;
+        };
+        VasPriceItemDto: {
+            /** @example xl */
+            slug: string;
+            price: number;
+            priceOld?: number;
+        };
+        VasStickerDto: {
+            id: number;
+            title?: string;
+            description?: string;
+        };
+        VasOfferDto: {
+            externalId: string;
+            vas: components["schemas"]["VasPriceItemDto"][];
+            stickers: components["schemas"]["VasStickerDto"][];
+        };
+        ApplyVasDto: {
+            /** @example ["xl","highlight"] */
+            slugs: string[];
+            /** @example [1,2] */
+            stickers?: number[];
+        };
+        OrderActionViewDto: {
+            /**
+             * @example confirm
+             * @description Имя действия площадки: confirm, reject, perform, receive, setTrackNumber…
+             */
+            name: string;
+            required: boolean;
+        };
+        OrderItemViewDto: {
+            /** Format: uuid */
+            id: string;
+            title: string;
+            quantity: number;
+            price: number;
+            total: number;
+            avitoId: string | null;
+        };
+        OrderViewDto: {
+            /** Format: uuid */
+            id: string;
+            /** @enum {string} */
+            channel: "AVITO" | "OZON" | "WILDBERRIES" | "DROM";
+            /** Format: uuid */
+            channelAccountId: string;
+            externalId: string;
+            marketplaceId: string | null;
+            /** @enum {string} */
+            status: "PENDING_CONFIRMATION" | "READY_TO_SHIP" | "IN_TRANSIT" | "DELIVERED" | "CANCELED" | "ON_RETURN" | "IN_DISPUTE" | "CLOSED" | "UNKNOWN";
+            rawStatus: string;
+            availableActions: components["schemas"]["OrderActionViewDto"][];
+            totalAmount: number | null;
+            currency: string;
+            /** Format: date-time */
+            placedAt: string;
+            /** Format: date-time */
+            syncedAt: string | null;
+            items: components["schemas"]["OrderItemViewDto"][];
+        };
+        OrderListResultDto: {
+            items: components["schemas"]["OrderViewDto"][];
+            total: number;
+            page: number;
+            perPage: number;
+        };
+        ApplyOrderTransitionDto: {
+            /**
+             * @example confirm
+             * @enum {string}
+             */
+            transition: "confirm" | "reject" | "perform" | "receive";
+            /** @description Код подтверждения для CNC (самовывоз) */
+            confirmCode?: string;
+        };
+        SetOrderTrackingDto: {
+            /** @example 01-01031002199 */
+            trackingNumber: string;
+        };
+        QueuedOrderActionDto: {
+            /** @example true */
+            queued: true;
+            /** Format: uuid */
+            orderId: string;
+        };
+        AcceptOrderReturnDto: {
+            /**
+             * @example 123456
+             * @description Номер отделения Почты России
+             */
+            terminalNumber: string;
+            /** @example Иванов Иван Иванович */
+            recipientName: string;
+            /** @example +79001234567 */
+            recipientPhone: string;
+        };
+        OrderLabelsResultDto: {
+            /** @example label-12345.pdf */
+            filename: string;
+            /** @example application/pdf */
+            contentType: string;
+            /** @description PDF в base64 */
+            data: string;
+        };
+        OrderMarkingItemDto: {
+            /** @description ID товара в Авито (avitoId позиции) */
+            itemId: string;
+            /** @example ["36376376113637637611363763761123"] */
+            markings: string[];
+        };
+        SetOrderMarkingsDto: {
+            items: components["schemas"]["OrderMarkingItemDto"][];
+        };
+        CourierTimeIntervalDto: {
+            startDate: string;
+            endDate: string;
+            title?: string;
+            type?: string;
+        };
+        CourierDateOptionDto: {
+            date: string;
+            timeIntervals: components["schemas"]["CourierTimeIntervalDto"][];
+        };
+        CourierRangeResultDto: {
+            address?: string;
+            addressDetails?: string;
+            name?: string;
+            phone?: string;
+            dateOptions: components["schemas"]["CourierDateOptionDto"][];
+        };
+        SetCourierRangeDto: {
+            address: string;
+            addressDetails?: string;
+            /** Format: date-time */
+            startDate: string;
+            /** Format: date-time */
+            endDate: string;
+            /** @enum {string} */
+            intervalType: "fixed" | "asap";
+            phone: string;
+            name: string;
+        };
+        SetCncDetailsDto: {
+            /**
+             * @example 4
+             * @description Срок бронирования в днях
+             */
+            bookingPeriod: number;
+            address?: string;
+            /** @description Комментарий покупателю */
+            details?: string;
+        };
+        WalletBalanceDto: {
+            /** Format: uuid */
+            channelAccountId: string;
+            real: number;
+            bonus: number;
+        };
+        WalletOperationDto: {
+            amountBonus: number;
+            amountRub: number;
+            amountTotal: number;
+            itemId: string | null;
+            operationName: string;
+            operationType: string;
+            serviceName: string | null;
+            serviceType?: string | null;
+            updatedAt: string;
+        };
+        WalletOperationsResultDto: {
+            /** Format: uuid */
+            channelAccountId: string;
+            from: string;
+            to: string;
+            items: components["schemas"]["WalletOperationDto"][];
+        };
+        AdjustInventoryDto: {
+            /** Format: uuid */
+            listingId: string;
+            quantity: number;
+            reason?: string;
+            pushToChannel?: boolean;
+        };
+        InventoryViewDto: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            variantId: string;
+            sku: string;
+            title: string | null;
+            quantity: number;
+            reserved: number;
+            available: number;
+            /** Format: uuid */
+            listingId: string | null;
+            listingExternalId: string | null;
+            /** @enum {string} */
+            channel: "AVITO" | "OZON" | "WILDBERRIES" | "DROM" | null;
+            /** Format: uuid */
+            channelAccountId: string | null;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        InventoryListResultDto: {
+            items: components["schemas"]["InventoryViewDto"][];
+            total: number;
+            page: number;
+            perPage: number;
+        };
         DailyTotalsDto: {
             /** @example 2026-09-11 */
             date: string;
@@ -291,11 +1025,198 @@ export interface components {
             /** @enum {string} */
             channel: "AVITO" | "OZON" | "WILDBERRIES" | "DROM";
             /** @enum {string} */
-            entity: "listings" | "stats";
+            entity: "listings" | "stats" | "orders" | "chats" | "reviews" | "stocks";
         };
         TriggerSyncResultDto: {
             /** @example true */
             queued: boolean;
+        };
+        ConversationViewDto: {
+            /** Format: uuid */
+            id: string;
+            /** @enum {string} */
+            channel: "AVITO" | "OZON" | "WILDBERRIES" | "DROM";
+            /** Format: uuid */
+            channelAccountId: string;
+            externalId: string;
+            listingExternalId: string | null;
+            listingTitle: string | null;
+            peerExternalId: string | null;
+            peerName: string | null;
+            unreadCount: number;
+            /** Format: date-time */
+            lastMessageAt: string | null;
+            lastMessagePreview: string | null;
+            /** @enum {string} */
+            lastMessageDirection: "IN" | "OUT" | null;
+            /** Format: date-time */
+            syncedAt: string | null;
+        };
+        ConversationListResultDto: {
+            items: components["schemas"]["ConversationViewDto"][];
+            total: number;
+            page: number;
+            perPage: number;
+        };
+        MessageViewDto: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            conversationId: string;
+            externalId: string;
+            /** @enum {string} */
+            direction: "IN" | "OUT";
+            /** @enum {string} */
+            type: "TEXT" | "IMAGE" | "LINK" | "ITEM" | "LOCATION" | "CALL" | "VOICE" | "SYSTEM" | "DELETED" | "OTHER";
+            bodyText: string | null;
+            contentJson: unknown;
+            authorExternalId: string | null;
+            isRead: boolean;
+            /** Format: date-time */
+            sentAt: string;
+        };
+        MessageListResultDto: {
+            items: components["schemas"]["MessageViewDto"][];
+            total: number;
+            page: number;
+            perPage: number;
+        };
+        SendTextMessageDto: {
+            /** @example Здравствуйте! Товар ещё актуален? */
+            text: string;
+        };
+        SubscribeWebhookDto: {
+            /** Format: uuid */
+            channelAccountId: string;
+        };
+        WebhookSubscribeResultDto: {
+            url: string;
+        };
+        MarkConversationReadResultDto: {
+            /** @example true */
+            ok: true;
+        };
+        SyncConversationMessagesResultDto: {
+            fetched: number;
+        };
+        UnsubscribeWebhookResultDto: {
+            /** @example true */
+            ok: true;
+        };
+        AutoloadAccountQueryDto: {
+            /** Format: uuid */
+            channelAccountId: string;
+        };
+        CreateFeedListingDto: {
+            /** Format: uuid */
+            channelAccountId: string;
+            /** @example Фильтр масляный Toyota */
+            title: string;
+            description: string;
+            /** @example 1200 */
+            price: number;
+            /** SKU / Id в XML-фиде. Если не задан — сгенерируем */
+            sku?: string;
+        };
+        FeedListingDto: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            channelAccountId: string;
+            /** Format: uuid */
+            variantId: string | null;
+            sku: string;
+            title: string;
+            description: string | null;
+            price: number;
+            currency: string;
+            externalId: string;
+            avitoAdId: string | null;
+            /** @enum {string} */
+            status: "ACTIVE" | "BLOCKED" | "ARCHIVED" | "REJECTED" | "REMOVED" | "OLD" | "UNKNOWN";
+            /** Format: date-time */
+            createdAt: string;
+        };
+        UpdateAutoloadSettingsDto: {
+            category?: string;
+            goodsType?: string | null;
+            address?: string;
+            contactPhone?: string | null;
+            managerName?: string | null;
+            condition?: string;
+            descriptionFallback?: string;
+        };
+        AutoloadSettingsDto: {
+            /** Format: uuid */
+            channelAccountId: string;
+            feedUrl: string;
+            category: string;
+            goodsType: string | null;
+            address: string;
+            contactPhone: string | null;
+            managerName: string | null;
+            condition: string;
+            descriptionFallback: string;
+        };
+        AutoloadRunDto: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            channelAccountId: string;
+            /** @enum {string} */
+            status: "PENDING" | "RUNNING" | "COMPLETED" | "FAILED";
+            externalReportId: string | null;
+            itemsTotal: number;
+            itemsOk: number;
+            itemsError: number;
+            lastError: string | null;
+            /** Format: date-time */
+            startedAt: string;
+            /** Format: date-time */
+            finishedAt: string | null;
+        };
+        AutoloadItemDto: {
+            /** Format: uuid */
+            id: string;
+            adId: string;
+            avitoId: string | null;
+            section: string | null;
+            sectionTitle: string | null;
+            avitoStatus: string | null;
+            url: string | null;
+            messagesJson: unknown;
+        };
+        ReviewViewDto: {
+            /** Format: uuid */
+            id: string;
+            /** @enum {string} */
+            channel: "AVITO" | "OZON" | "WILDBERRIES" | "DROM";
+            /** Format: uuid */
+            channelAccountId: string;
+            externalId: string;
+            score: number;
+            text: string | null;
+            stage: string | null;
+            canAnswer: boolean;
+            itemExternalId: string | null;
+            itemTitle: string | null;
+            authorName: string | null;
+            /** Format: date-time */
+            publishedAt: string | null;
+            answerExternalId: string | null;
+            answerText: string | null;
+            /** Format: date-time */
+            syncedAt: string | null;
+        };
+        ReviewListResultDto: {
+            items: components["schemas"]["ReviewViewDto"][];
+            total: number;
+            page: number;
+            perPage: number;
+        };
+        AnswerReviewDto: {
+            /** @example Спасибо за отзыв! */
+            text: string;
         };
     };
     responses: never;
@@ -494,6 +1415,406 @@ export interface operations {
             };
         };
     };
+    ListingsController_updatePrice: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateListingPriceDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QueuedListingActionDto"];
+                };
+            };
+        };
+    };
+    ListingsController_vas: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VasOfferDto"];
+                };
+            };
+        };
+    };
+    ListingsController_applyVas: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ApplyVasDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QueuedListingActionDto"];
+                };
+            };
+        };
+    };
+    OrdersController_list: {
+        parameters: {
+            query?: {
+                status?: "PENDING_CONFIRMATION" | "READY_TO_SHIP" | "IN_TRANSIT" | "DELIVERED" | "CANCELED" | "ON_RETURN" | "IN_DISPUTE" | "CLOSED" | "UNKNOWN";
+                page?: number;
+                perPage?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrderListResultDto"];
+                };
+            };
+        };
+    };
+    OrdersController_transition: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ApplyOrderTransitionDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QueuedOrderActionDto"];
+                };
+            };
+        };
+    };
+    OrdersController_trackingNumber: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SetOrderTrackingDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QueuedOrderActionDto"];
+                };
+            };
+        };
+    };
+    OrdersController_acceptReturn: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AcceptOrderReturnDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QueuedOrderActionDto"];
+                };
+            };
+        };
+    };
+    OrdersController_labels: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrderLabelsResultDto"];
+                };
+            };
+        };
+    };
+    OrdersController_markings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SetOrderMarkingsDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QueuedOrderActionDto"];
+                };
+            };
+        };
+    };
+    OrdersController_courierRange: {
+        parameters: {
+            query?: {
+                address?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CourierRangeResultDto"];
+                };
+            };
+        };
+    };
+    OrdersController_setCourierRange: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SetCourierRangeDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QueuedOrderActionDto"];
+                };
+            };
+        };
+    };
+    OrdersController_cncDetails: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SetCncDetailsDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QueuedOrderActionDto"];
+                };
+            };
+        };
+    };
+    WalletController_balance: {
+        parameters: {
+            query: {
+                channelAccountId: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WalletBalanceDto"];
+                };
+            };
+        };
+    };
+    WalletController_operations: {
+        parameters: {
+            query: {
+                channelAccountId: string;
+                /** Format: date-time */
+                dateFrom: string;
+                /** Format: date-time */
+                dateTo: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WalletOperationsResultDto"];
+                };
+            };
+        };
+    };
+    InventoryController_list: {
+        parameters: {
+            query?: {
+                page?: number;
+                perPage?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InventoryListResultDto"];
+                };
+            };
+        };
+    };
+    InventoryController_byListing: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                listingId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InventoryViewDto"] | null;
+                };
+            };
+        };
+    };
+    InventoryController_adjust: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdjustInventoryDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InventoryViewDto"];
+                };
+            };
+        };
+    };
     AnalyticsController_daily: {
         parameters: {
             query?: {
@@ -535,6 +1856,418 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["TriggerSyncResultDto"];
+                };
+            };
+        };
+    };
+    MessagingController_listConversations: {
+        parameters: {
+            query?: {
+                page?: number;
+                perPage?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConversationListResultDto"];
+                };
+            };
+        };
+    };
+    MessagingController_listMessages: {
+        parameters: {
+            query?: {
+                page?: number;
+                perPage?: number;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageListResultDto"];
+                };
+            };
+        };
+    };
+    MessagingController_sendText: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SendTextMessageDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageViewDto"];
+                };
+            };
+        };
+    };
+    MessagingController_sendImage: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    /** Format: binary */
+                    file: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageViewDto"];
+                };
+            };
+        };
+    };
+    MessagingController_markRead: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MarkConversationReadResultDto"];
+                };
+            };
+        };
+    };
+    MessagingController_syncMessages: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SyncConversationMessagesResultDto"];
+                };
+            };
+        };
+    };
+    MessagingController_subscribe: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SubscribeWebhookDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WebhookSubscribeResultDto"];
+                };
+            };
+        };
+    };
+    MessagingController_unsubscribe: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SubscribeWebhookDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnsubscribeWebhookResultDto"];
+                };
+            };
+        };
+    };
+    AutoloadController_settings: {
+        parameters: {
+            query: {
+                channelAccountId: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AutoloadSettingsDto"];
+                };
+            };
+        };
+    };
+    AutoloadController_updateSettings: {
+        parameters: {
+            query: {
+                channelAccountId: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateAutoloadSettingsDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AutoloadSettingsDto"];
+                };
+            };
+        };
+    };
+    AutoloadController_listListings: {
+        parameters: {
+            query: {
+                channelAccountId: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FeedListingDto"][];
+                };
+            };
+        };
+    };
+    AutoloadController_createListing: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateFeedListingDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FeedListingDto"];
+                };
+            };
+        };
+    };
+    AutoloadController_upload: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AutoloadAccountQueryDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AutoloadRunDto"];
+                };
+            };
+        };
+    };
+    AutoloadController_refresh: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AutoloadAccountQueryDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AutoloadRunDto"];
+                };
+            };
+        };
+    };
+    AutoloadController_runs: {
+        parameters: {
+            query: {
+                channelAccountId: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AutoloadRunDto"][];
+                };
+            };
+        };
+    };
+    AutoloadController_items: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AutoloadItemDto"][];
+                };
+            };
+        };
+    };
+    ReviewsController_list: {
+        parameters: {
+            query?: {
+                page?: number;
+                perPage?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReviewListResultDto"];
+                };
+            };
+        };
+    };
+    ReviewsController_answer: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AnswerReviewDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReviewViewDto"];
                 };
             };
         };

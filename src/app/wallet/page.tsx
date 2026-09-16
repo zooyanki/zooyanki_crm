@@ -3,14 +3,12 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
-import { MetricsChart } from '@/features/analytics/metrics-chart';
-import { ListingsTable } from '@/features/listings/listings-table';
-import { SyncToolbar } from '@/features/sync/sync-toolbar';
+import { WalletPanel } from '@/features/wallet/wallet-panel';
 import { useLogout, useMe } from '@/shared/api/hooks';
 import { isAuthenticated } from '@/shared/auth/session';
 import { AppNav } from '@/shared/ui/app-nav';
 
-export default function HomePage() {
+export default function WalletPage() {
   const router = useRouter();
   const authenticated = typeof window !== 'undefined' && isAuthenticated();
   const me = useMe(authenticated);
@@ -61,12 +59,10 @@ export default function HomePage() {
             Zooyanki CRM
           </p>
           <h1 className="font-[family-name:var(--font-display)] text-3xl font-semibold tracking-tight text-zinc-900 sm:text-4xl">
-            Объявления и контакты
+            Кошелёк
           </h1>
           <p className="max-w-2xl text-sm leading-6 text-zinc-600 sm:text-base">
-            {me.data
-              ? `${me.data.user.name} · ${me.data.tenant.name}`
-              : 'Импорт с Авито, статусы публикаций и суточная динамика.'}
+            Баланс и операции кошелька подключённых аккаунтов Авито.
           </p>
           <AppNav />
         </div>
@@ -79,9 +75,7 @@ export default function HomePage() {
         </button>
       </header>
 
-      <SyncToolbar />
-      <MetricsChart />
-      <ListingsTable />
+      <WalletPanel />
     </main>
   );
 }

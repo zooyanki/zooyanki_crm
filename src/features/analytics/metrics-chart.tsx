@@ -23,12 +23,12 @@ export function MetricsChart() {
   const { data, isLoading, isError, error } = useDailyAnalytics();
 
   if (isLoading) {
-    return <ChartShell title="Показы и контакты">Загружаем метрики…</ChartShell>;
+    return <ChartShell title="Показы, контакты и расходы">Загружаем метрики…</ChartShell>;
   }
 
   if (isError) {
     return (
-      <ChartShell title="Показы и контакты">
+      <ChartShell title="Показы, контакты и расходы">
         Не удалось загрузить аналитику: {error.message}
       </ChartShell>
     );
@@ -37,17 +37,21 @@ export function MetricsChart() {
   const rows = data ?? [];
   const totalViews = rows.reduce((sum, row) => sum + row.views, 0);
   const totalContacts = rows.reduce((sum, row) => sum + row.contacts, 0);
+  const totalSpending = rows.reduce((sum, row) => sum + (row.spending ?? 0), 0);
 
   return (
     <section className="rounded-2xl border border-zinc-200/80 bg-white/80 p-5 shadow-sm backdrop-blur">
       <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h2 className="text-lg font-semibold tracking-tight text-zinc-900">Показы и контакты</h2>
+          <h2 className="text-lg font-semibold tracking-tight text-zinc-900">
+            Показы, контакты и расходы
+          </h2>
           <p className="text-sm text-zinc-500">Суточная динамика по всем объявлениям Авито</p>
         </div>
         <div className="flex gap-6 text-sm">
           <MetricBadge label="Показы" value={formatNumber(totalViews)} />
           <MetricBadge label="Контакты" value={formatNumber(totalContacts)} />
+          <MetricBadge label="Расходы" value={`${formatNumber(totalSpending)} ₽`} />
         </div>
       </div>
 
@@ -68,10 +72,19 @@ export function MetricsChart() {
                 tickLine={false}
               />
               <YAxis
+                yAxisId="metrics"
                 tick={{ fill: '#71717a', fontSize: 12 }}
                 axisLine={false}
                 tickLine={false}
                 width={40}
+              />
+              <YAxis
+                yAxisId="money"
+                orientation="right"
+                tick={{ fill: '#71717a', fontSize: 12 }}
+                axisLine={false}
+                tickLine={false}
+                width={48}
               />
               <Tooltip
                 contentStyle={{
@@ -83,6 +96,7 @@ export function MetricsChart() {
               />
               <Legend />
               <Line
+                yAxisId="metrics"
                 type="monotone"
                 dataKey="views"
                 name="Показы"
@@ -92,10 +106,21 @@ export function MetricsChart() {
                 activeDot={{ r: 4 }}
               />
               <Line
+                yAxisId="metrics"
                 type="monotone"
                 dataKey="contacts"
                 name="Контакты"
                 stroke="#b45309"
+                strokeWidth={2.5}
+                dot={false}
+                activeDot={{ r: 4 }}
+              />
+              <Line
+                yAxisId="money"
+                type="monotone"
+                dataKey="spending"
+                name="Расходы, ₽"
+                stroke="#be123c"
                 strokeWidth={2.5}
                 dot={false}
                 activeDot={{ r: 4 }}
