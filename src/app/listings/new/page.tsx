@@ -3,22 +3,16 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
-import { CatalogTable } from '@/features/catalog/catalog-table';
-import { ChannelsSetup } from '@/features/channels/channels-setup';
-import { SyncToolbar } from '@/features/sync/sync-toolbar';
-import { useChannelAccounts, useLogout, useMe } from '@/shared/api/hooks';
+import { CreateListingForm } from '@/features/catalog/create-listing-form';
+import { useLogout, useMe } from '@/shared/api/hooks';
 import { isAuthenticated } from '@/shared/auth/session';
 import { AppNav } from '@/shared/ui/app-nav';
 
-export default function HomePage() {
+export default function NewListingPage() {
   const router = useRouter();
   const authenticated = typeof window !== 'undefined' && isAuthenticated();
   const me = useMe(authenticated);
   const logout = useLogout();
-  const accounts = useChannelAccounts();
-  const needsSetup =
-    accounts.isSuccess &&
-    (accounts.data ?? []).filter((item) => item.status === 'ACTIVE').length === 0;
 
   useEffect(() => {
     if (!isAuthenticated()) {
@@ -65,12 +59,10 @@ export default function HomePage() {
             Zooyanki CRM
           </p>
           <h1 className="font-[family-name:var(--font-display)] text-3xl font-semibold tracking-tight text-zinc-900 sm:text-4xl">
-            Объявления
+            Создать объявление
           </h1>
           <p className="max-w-2xl text-sm leading-6 text-zinc-600 sm:text-base">
-            {me.data
-              ? `${me.data.user.name} · ${me.data.tenant.name}`
-              : 'Единый каталог: один товар, значки площадок без дублей.'}
+            Заполните карточку товара и выберите площадки публикации.
           </p>
           <AppNav />
         </div>
@@ -83,9 +75,7 @@ export default function HomePage() {
         </button>
       </header>
 
-      {needsSetup ? <ChannelsSetup /> : null}
-      <SyncToolbar />
-      <CatalogTable />
+      <CreateListingForm />
     </main>
   );
 }

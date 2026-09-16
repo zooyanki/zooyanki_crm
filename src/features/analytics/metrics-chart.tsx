@@ -19,8 +19,14 @@ function formatAxisDate(value: string): string {
   return new Intl.DateTimeFormat('ru-RU', { day: '2-digit', month: 'short' }).format(date);
 }
 
-export function MetricsChart() {
-  const { data, isLoading, isError, error } = useDailyAnalytics();
+export function MetricsChart({
+  channelAccountId,
+  subtitle,
+}: {
+  channelAccountId?: string;
+  subtitle?: string;
+}) {
+  const { data, isLoading, isError, error } = useDailyAnalytics(channelAccountId);
 
   if (isLoading) {
     return <ChartShell title="Показы, контакты и расходы">Загружаем метрики…</ChartShell>;
@@ -46,7 +52,9 @@ export function MetricsChart() {
           <h2 className="text-lg font-semibold tracking-tight text-zinc-900">
             Показы, контакты и расходы
           </h2>
-          <p className="text-sm text-zinc-500">Суточная динамика по всем объявлениям Авито</p>
+          <p className="text-sm text-zinc-500">
+            {subtitle ?? 'Суточная динамика по объявлениям выбранной площадки'}
+          </p>
         </div>
         <div className="flex gap-6 text-sm">
           <MetricBadge label="Показы" value={formatNumber(totalViews)} />

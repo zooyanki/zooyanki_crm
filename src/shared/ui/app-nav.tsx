@@ -7,6 +7,7 @@ import { cn } from '@/shared/lib/utils';
 
 const LINKS = [
   { href: '/', label: 'Объявления' },
+  { href: '/statistics', label: 'Статистика' },
   { href: '/orders', label: 'Заказы' },
   { href: '/inventory', label: 'Склад' },
   { href: '/messages', label: 'Сообщения' },
@@ -21,7 +22,10 @@ export function AppNav() {
   return (
     <nav className="flex flex-wrap gap-1">
       {LINKS.map((link) => {
-        const active = pathname === link.href;
+        const active =
+          link.href === '/'
+            ? pathname === '/' || pathname.startsWith('/listings')
+            : pathname === link.href || pathname.startsWith(`${link.href}/`);
         return (
           <Link
             key={link.href}

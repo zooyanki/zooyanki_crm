@@ -74,6 +74,8 @@ export const CHANNEL_LABEL: Record<string, string> = {
   OZON: 'Ozon',
   WILDBERRIES: 'Wildberries',
   DROM: 'Drom',
+  XO_MARKET: 'XO-market',
+  YULA: 'Юла',
 };
 
 export const AUTOLOAD_RUN_STATUS_LABEL: Record<AutoloadRunStatus, string> = {

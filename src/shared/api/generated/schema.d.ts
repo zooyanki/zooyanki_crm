@@ -127,6 +127,75 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/channels": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Список площадок, которые можно предложить пользователю */
+        get: operations["ChannelsCatalogController_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/catalog": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Товары без дублей по площадкам, с публикациями */
+        get: operations["CatalogController_list"];
+        put?: never;
+        /** Создать товар и выложить на выбранные площадки */
+        post: operations["CatalogController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/catalog/options": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Короткий список товаров для привязки объявления */
+        get: operations["CatalogController_options"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/catalog/attach": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Присвоить объявление площадки существующему товару */
+        post: operations["CatalogController_attach"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/listings": {
         parameters: {
             query?: never;
@@ -745,9 +814,71 @@ export interface components {
             /** Format: date-time */
             createdAt: string;
         };
+        ChannelCatalogItemDto: {
+            /** @enum {string} */
+            code: "AVITO" | "OZON" | "WILDBERRIES" | "DROM" | "XO_MARKET" | "YULA";
+            title: string;
+            connectable: boolean;
+            authHint: string;
+        };
+        ChannelCatalogResultDto: {
+            items: components["schemas"]["ChannelCatalogItemDto"][];
+        };
+        CatalogPublicationDto: {
+            /** Format: uuid */
+            listingId: string;
+            /** @enum {string} */
+            channel: "AVITO" | "OZON" | "WILDBERRIES" | "DROM" | "XO_MARKET" | "YULA";
+            /** Format: uuid */
+            channelAccountId: string;
+            externalId: string;
+            /** @enum {string} */
+            status: "ACTIVE" | "BLOCKED" | "ARCHIVED" | "REJECTED" | "REMOVED" | "OLD" | "UNKNOWN";
+            url: string | null;
+        };
+        CatalogItemDto: {
+            /** Format: uuid */
+            variantId: string;
+            /** Format: uuid */
+            productId: string;
+            sku: string;
+            title: string;
+            description: string | null;
+            price: number | null;
+            currency: string;
+            publications: components["schemas"]["CatalogPublicationDto"][];
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        CatalogListResultDto: {
+            items: components["schemas"]["CatalogItemDto"][];
+            total: number;
+            page: number;
+            perPage: number;
+        };
+        CreateCatalogItemDto: {
+            title: string;
+            description: string;
+            price: number;
+            sku?: string;
+            /** Format: uuid */
+            channelAccountIds: string[];
+        };
+        AttachListingDto: {
+            /** Format: uuid */
+            listingId: string;
+            /** Format: uuid */
+            variantId: string;
+        };
+        CatalogVariantOptionDto: {
+            /** Format: uuid */
+            variantId: string;
+            sku: string;
+            title: string;
+        };
         ConnectChannelAccountDto: {
             /** @enum {string} */
-            channel: "AVITO" | "OZON" | "WILDBERRIES" | "DROM";
+            channel: "AVITO" | "OZON" | "WILDBERRIES" | "DROM" | "XO_MARKET" | "YULA";
             title: string;
             clientId: string;
             clientSecret: string;
@@ -756,7 +887,7 @@ export interface components {
             /** Format: uuid */
             id: string;
             /** @enum {string} */
-            channel: "AVITO" | "OZON" | "WILDBERRIES" | "DROM";
+            channel: "AVITO" | "OZON" | "WILDBERRIES" | "DROM" | "XO_MARKET" | "YULA";
             title: string;
             /** @enum {string} */
             status: "PENDING" | "ACTIVE" | "INVALID_CREDENTIALS" | "DISABLED";
@@ -771,7 +902,7 @@ export interface components {
             /** Format: uuid */
             id: string;
             /** @enum {string} */
-            channel: "AVITO" | "OZON" | "WILDBERRIES" | "DROM";
+            channel: "AVITO" | "OZON" | "WILDBERRIES" | "DROM" | "XO_MARKET" | "YULA";
             /** Format: uuid */
             channelAccountId: string;
             externalId: string;
@@ -845,7 +976,7 @@ export interface components {
             /** Format: uuid */
             id: string;
             /** @enum {string} */
-            channel: "AVITO" | "OZON" | "WILDBERRIES" | "DROM";
+            channel: "AVITO" | "OZON" | "WILDBERRIES" | "DROM" | "XO_MARKET" | "YULA";
             /** Format: uuid */
             channelAccountId: string;
             externalId: string;
@@ -999,7 +1130,7 @@ export interface components {
             listingId: string | null;
             listingExternalId: string | null;
             /** @enum {string} */
-            channel: "AVITO" | "OZON" | "WILDBERRIES" | "DROM" | null;
+            channel: "AVITO" | "OZON" | "WILDBERRIES" | "DROM" | "XO_MARKET" | "YULA" | null;
             /** Format: uuid */
             channelAccountId: string | null;
             /** Format: date-time */
@@ -1023,7 +1154,7 @@ export interface components {
             /** Format: uuid */
             channelAccountId: string;
             /** @enum {string} */
-            channel: "AVITO" | "OZON" | "WILDBERRIES" | "DROM";
+            channel: "AVITO" | "OZON" | "WILDBERRIES" | "DROM" | "XO_MARKET" | "YULA";
             /** @enum {string} */
             entity: "listings" | "stats" | "orders" | "chats" | "reviews" | "stocks";
         };
@@ -1035,7 +1166,7 @@ export interface components {
             /** Format: uuid */
             id: string;
             /** @enum {string} */
-            channel: "AVITO" | "OZON" | "WILDBERRIES" | "DROM";
+            channel: "AVITO" | "OZON" | "WILDBERRIES" | "DROM" | "XO_MARKET" | "YULA";
             /** Format: uuid */
             channelAccountId: string;
             externalId: string;
@@ -1190,7 +1321,7 @@ export interface components {
             /** Format: uuid */
             id: string;
             /** @enum {string} */
-            channel: "AVITO" | "OZON" | "WILDBERRIES" | "DROM";
+            channel: "AVITO" | "OZON" | "WILDBERRIES" | "DROM" | "XO_MARKET" | "YULA";
             /** Format: uuid */
             channelAccountId: string;
             externalId: string;
@@ -1387,6 +1518,113 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ChannelAccountViewDto"];
+                };
+            };
+        };
+    };
+    ChannelsCatalogController_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChannelCatalogResultDto"];
+                };
+            };
+        };
+    };
+    CatalogController_list: {
+        parameters: {
+            query?: {
+                status?: "ACTIVE" | "BLOCKED" | "ARCHIVED" | "REJECTED" | "REMOVED" | "OLD" | "UNKNOWN";
+                page?: number;
+                perPage?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CatalogListResultDto"];
+                };
+            };
+        };
+    };
+    CatalogController_options: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CatalogVariantOptionDto"][];
+                };
+            };
+        };
+    };
+    CatalogController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateCatalogItemDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CatalogItemDto"];
+                };
+            };
+        };
+    };
+    CatalogController_attach: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AttachListingDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CatalogItemDto"];
                 };
             };
         };
@@ -1820,6 +2058,7 @@ export interface operations {
             query?: {
                 from?: string;
                 to?: string;
+                channelAccountId?: string;
             };
             header?: never;
             path?: never;

@@ -11,7 +11,7 @@ import {
   useAutoloadSettings,
   useAutoloadUpload,
   useChannelAccounts,
-  useCreateFeedListing,
+  useCreateCatalogItem,
   useUpdateAutoloadSettings,
   type AutoloadRun,
   type AutoloadSettings,
@@ -495,25 +495,30 @@ function RunRow({
 
 function CreateFeedListingSection({ channelAccountId }: { channelAccountId: string }) {
   const listings = useAutoloadListings(channelAccountId);
-  const create = useCreateFeedListing();
+  const accounts = useChannelAccounts();
+  const create = useCreateCatalogItem();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
   const [sku, setSku] = useState('');
+  const [accountIds, setAccountIds] = useState<string[]>([channelAccountId]);
+
+  const activeAccounts = (accounts.data ?? []).filter((account) => account.status === 'ACTIVE');
 
   const submit = (event: React.FormEvent) => {
     event.preventDefault();
     const parsedPrice = Number(price.replace(',', '.'));
+    const targets = accountIds.length > 0 ? accountIds : [channelAccountId];
     if (!title.trim() || !description.trim() || !Number.isFinite(parsedPrice)) {
       return;
     }
 
     create.mutate(
       {
-        channelAccountId,
         title: title.trim(),
         description: description.trim(),
         price: parsedPrice,
+        channelAccountIds: targets,
         ...(sku.trim() ? { sku: sku.trim() } : {}),
       },
       {
@@ -531,8 +536,8 @@ function CreateFeedListingSection({ channelAccountId }: { channelAccountId: stri
     <section className="rounded-2xl border border-zinc-200/80 bg-white/80 px-5 py-4 shadow-sm backdrop-blur">
       <h2 className="text-lg font-semibold tracking-tight text-zinc-900">Новое объявление</h2>
       <p className="mt-1 text-sm text-zinc-500">
-        Попадёт в XML-фид. После выгрузки Авито присвоит свой id — подтяните отчёт.
-        Категория, адрес и телефон берутся из настроек фида ниже.
+        Один товар в каталоге, публикация на отмеченных площадках. Для Авито затем нажмите
+        «Выгрузить на Авито». Категория и адрес — из настроек фида ниже.
       </p>
 
       <form onSubmit={submit} className="mt-4 grid gap-3 sm:grid-cols-2">
@@ -586,6 +591,29 @@ function CreateFeedListingSection({ channelAccountId }: { channelAccountId: stri
             className="rounded-xl border border-zinc-200 bg-white px-3 py-2"
           />
         </label>
+
+        <fieldset className="sm:col-span-2">
+          <legend className="text-sm text-zinc-600">Куда выложить</legend>
+          <div className="mt-2 flex flex-wrap gap-3">
+            {activeAccounts.map((account) => {
+              const checked = accountIds.includes(account.id);
+              return (
+                <label key={account.id} className="flex items-center gap-2 text-sm">
+                  <input
+                    type="checkbox"
+                    checked={checked}
+                    onChange={() => {
+                      setAccountIds((prev) =>
+                        checked ? prev.filter((id) => id !== account.id) : [...prev, account.id],
+                      );
+                    }}
+                  />
+                  {CHANNEL_LABEL[account.channel] ?? account.channel}: {account.title}
+                </label>
+              );
+            })}
+          </div>
+        </fieldset>
 
         <div className="sm:col-span-2">
           <button

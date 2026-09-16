@@ -1,6 +1,14 @@
 export const queryKeys = {
-  listings: (params: { page: number; perPage: number; status?: string }) =>
-    ['listings', params] as const,
+  listings: (params: {
+    page: number;
+    perPage: number;
+    status?: string;
+    channelAccountId?: string;
+  }) => ['listings', params] as const,
+  catalog: (params: { page: number; perPage: number; status?: string }) =>
+    ['catalog', params] as const,
+  catalogOptions: () => ['catalog', 'options'] as const,
+  channelsCatalog: () => ['channels', 'catalog'] as const,
   listingVas: (listingId: string) => ['listings', listingId, 'vas'] as const,
   orders: (params: { page: number; perPage: number; status?: string }) =>
     ['orders', params] as const,
@@ -17,7 +25,8 @@ export const queryKeys = {
     dateFrom: string;
     dateTo: string;
   }) => ['wallet', 'operations', params] as const,
-  analyticsDaily: () => ['analytics', 'daily'] as const,
+  analyticsDaily: (channelAccountId?: string) =>
+    ['analytics', 'daily', channelAccountId ?? null] as const,
   conversations: (params: { page: number; perPage: number }) =>
     ['conversations', params] as const,
   messages: (conversationId: string, params: { page: number; perPage: number }) =>

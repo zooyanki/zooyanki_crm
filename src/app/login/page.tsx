@@ -47,6 +47,7 @@ export default function LoginPage() {
     try {
       if (mode === 'login') {
         await login.mutateAsync({ email, password });
+        router.replace('/');
       } else {
         await register.mutateAsync({
           email,
@@ -56,8 +57,8 @@ export default function LoginPage() {
             ? { claimTenantId: bootstrapTenantId }
             : { tenantName }),
         });
+        router.replace('/');
       }
-      router.replace('/');
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'Не удалось выполнить запрос');
     }

@@ -6,6 +6,10 @@ import { ApiError, api, unwrap } from './client';
 import type { components } from './generated/schema';
 import { queryKeys } from './query-keys';
 
+export type CatalogItem = components['schemas']['CatalogItemDto'];
+export type CatalogListResult = components['schemas']['CatalogListResultDto'];
+export type CatalogPublication = components['schemas']['CatalogPublicationDto'];
+export type ChannelCatalogItem = components['schemas']['ChannelCatalogItemDto'];
 export type ListingView = components['schemas']['ListingViewDto'];
 export type ListingListResult = components['schemas']['ListingListResultDto'];
 export type DailyTotals = components['schemas']['DailyTotalsDto'];
@@ -43,12 +47,45 @@ export function useListings(params: {
   page: number;
   perPage: number;
   status?: ListingStatus;
+  channelAccountId?: string;
+  enabled?: boolean;
 }) {
   return useQuery({
-    queryKey: queryKeys.listings(params),
+    queryKey: queryKeys.listings({
+      page: params.page,
+      perPage: params.perPage,
+      status: params.status,
+      channelAccountId: params.channelAccountId,
+    }),
     queryFn: () =>
       unwrap(
         api.GET('/api/listings', {
+          params: {
+            query: {
+              page: params.page,
+              perPage: params.perPage,
+              ...(params.status ? { status: params.status } : {}),
+              ...(params.channelAccountId
+                ? { channelAccountId: params.channelAccountId }
+                : {}),
+            },
+          },
+        }),
+      ),
+    enabled: params.enabled ?? true,
+  });
+}
+
+export function useCatalog(params: {
+  page: number;
+  perPage: number;
+  status?: ListingStatus;
+}) {
+  return useQuery({
+    queryKey: queryKeys.catalog(params),
+    queryFn: () =>
+      unwrap(
+        api.GET('/api/catalog', {
           params: {
             query: {
               page: params.page,
@@ -58,6 +95,63 @@ export function useListings(params: {
           },
         }),
       ),
+  });
+}
+
+export function useCatalogOptions() {
+  return useQuery({
+    queryKey: queryKeys.catalogOptions(),
+    queryFn: () => unwrap(api.GET('/api/catalog/options')),
+  });
+}
+
+export function useCreateCatalogItem() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (body: components['schemas']['CreateCatalogItemDto']) =>
+      unwrap(api.POST('/api/catalog', { body })),
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['catalog'] }),
+        queryClient.invalidateQueries({ queryKey: ['listings'] }),
+        queryClient.invalidateQueries({ queryKey: ['autoload'] }),
+      ]);
+    },
+  });
+}
+
+export function useAttachListing() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (body: components['schemas']['AttachListingDto']) =>
+      unwrap(api.POST('/api/catalog/attach', { body })),
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['catalog'] }),
+        queryClient.invalidateQueries({ queryKey: ['listings'] }),
+      ]);
+    },
+  });
+}
+
+export function useChannelsCatalog() {
+  return useQuery({
+    queryKey: queryKeys.channelsCatalog(),
+    queryFn: () => unwrap(api.GET('/api/channels')),
+  });
+}
+
+export function useConnectChannelAccount() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (body: components['schemas']['ConnectChannelAccountDto']) =>
+      unwrap(api.POST('/api/channel-accounts', { body })),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: queryKeys.channelAccounts() });
+    },
   });
 }
 
@@ -119,10 +213,18 @@ export function useApplyVas() {
   });
 }
 
-export function useDailyAnalytics() {
+export function useDailyAnalytics(channelAccountId?: string) {
   return useQuery({
-    queryKey: queryKeys.analyticsDaily(),
-    queryFn: () => unwrap(api.GET('/api/analytics/daily')),
+    queryKey: queryKeys.analyticsDaily(channelAccountId),
+    queryFn: () =>
+      unwrap(
+        api.GET('/api/analytics/daily', {
+          params: {
+            query: channelAccountId ? { channelAccountId } : {},
+          },
+        }),
+      ),
+    enabled: Boolean(channelAccountId),
   });
 }
 
@@ -618,7 +720,7 @@ export function useTriggerSync() {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ['listings'] }),
         variables.entity === 'stats'
-          ? queryClient.invalidateQueries({ queryKey: queryKeys.analyticsDaily() })
+          ? queryClient.invalidateQueries({ queryKey: ['analytics'] })
           : Promise.resolve(),
         variables.entity === 'orders'
           ? queryClient.invalidateQueries({ queryKey: ['orders'] })
